@@ -12,6 +12,12 @@ Pasteable CAR prompt:
 /Users/edwardtran/car-hub/rustify-car/CAR_TICKET_PROMPT.md
 ```
 
+QA and PR strategy:
+
+```text
+/Users/edwardtran/car-hub/rustify-car/QA_AND_GIT_STRATEGY.md
+```
+
 Summary:
 
 - Build Rustify as a proof-driven JS/TS hot-path-to-Rust migration tool.
