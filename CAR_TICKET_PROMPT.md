@@ -22,6 +22,9 @@ Critical decisions:
 - No safe callable boundary = no migration.
 - If context is missing, emit `contextRequest.promptForAgent`.
 - If agent-provided context cannot be verified, return `BLOCKED_AGENT_CONTEXT_UNVERIFIED`.
+- Agent-created tests are weak proposed harnesses until verifier proves provenance.
+- Snapshot repo state before asking an agent for context.
+- Do mutation checks: if function A is broken, the claimed test must fail.
 - Build one proof-driven migration path first.
 - Do not build desktop/pets/slides before proof loop works.
 - This repo is `rustify-car`, built by CAR/Codex Auto Runner only.
@@ -67,5 +70,15 @@ Ticket requirements:
 - Use explicit statuses: `PASS`, `RECOMMEND`, `NOT_RECOMMENDED`, `BLOCKED_*`, `ERROR_TOOL_FAILURE`.
 - Treat `BLOCKED_*` as exit code 0 controlled output. Nonzero is only `ERROR_TOOL_FAILURE`.
 - Keep tickets small enough for autonomous execution.
+- Prefer ordered tickets that finish a real vertical slice before broadening:
+  1. CLI scaffold and JSON status envelope.
+  2. artifact writer under `.rustify/runs/<run-id>/`.
+  3. PapaParse-style happy path with JS oracle.
+  4. Rust/NAPI implementation and equality verifier.
+  5. benchmark/report.
+  6. context-request blocker path.
+  7. oh-my-openagent second target.
+  8. opencode candidate/blocker.
+  9. compare command against `rustify-codex`.
 
 Now create tickets under `.codex-autorunner/tickets/`.
