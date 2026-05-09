@@ -5,6 +5,7 @@ Read:
 - `.codex-autorunner/contextspace/spec.md`
 - `.codex-autorunner/contextspace/active_context.md`
 - `.codex-autorunner/contextspace/decisions.md`
+- `QA_AND_GIT_STRATEGY.md`
 
 Create a fresh ordered ticket queue for `rustify-car`.
 
