@@ -78,6 +78,23 @@ benchmark rustify-car vs rustify-codex
 keep the better implementation or merge best parts
 ```
 
+## Codex-Native Contract
+
+Rustify should be designed for Codex/CAR to operate safely.
+
+Official Codex docs say `AGENTS.md` is the durable project guidance file. Use it. Do not invent `crawl.md`; alternate instruction filenames are ignored unless the user's Codex config explicitly adds them with `project_doc_fallback_filenames`.
+
+Codex-native surfaces for this build:
+
+- `AGENTS.md` for durable repo rules.
+- `.codex-autorunner/contextspace/spec.md` for CAR source of truth.
+- `.codex-autorunner/tickets/` for CAR execution.
+- CLI `--json` output for agent parsing.
+- `.rustify/runs/<run-id>/` proof artifacts for review.
+- `contextRequest.promptForAgent` when blocked.
+
+See root `CODEX_NATIVE.md` for the exact command/output contract.
+
 ## Demo Targets
 Need three demo points, not five full migrations.
 
@@ -179,6 +196,38 @@ Only migrate after an oracle from the original JS/TS implementation exists and p
 
 Never invent fake config or fake expected output and call it safe.
 
+## Agent Context Requests
+
+When deterministic discovery cannot find enough runtime context, Rustify may ask the running Codex agent for help. That is still conservative if Rustify verifies the answer.
+
+Context request output should include:
+
+```json
+{
+  "status": "BLOCKED_RUNTIME_CONTEXT_REQUIRED",
+  "contextRequest": {
+    "needed": ["safe command", "fixture input", "expected output"],
+    "promptForAgent": "Do not hallucinate runtime context. Do not invent inputs, expected outputs, config, or purity. Use existing tests, fixtures, snapshots, examples, package scripts, or user-provided samples only. If evidence is missing, return blocked."
+  }
+}
+```
+
+Rustify accepts agent-provided context only after deterministic verification:
+
+- referenced files exist
+- package script or command exists
+- command runs safely
+- target function is actually callable
+- input shape is grounded in tests, fixtures, examples, or call sites
+- original JS/TS oracle output can be produced
+- Rust/NAPI output equals the oracle
+
+If the agent gives unverifiable context, return:
+
+```text
+BLOCKED_AGENT_CONTEXT_UNVERIFIED
+```
+
 ## Required Status Codes
 Use explicit status values in JSON artifacts and reports.
 
@@ -193,6 +242,7 @@ BLOCKED_ORACLE_REQUIRED
 BLOCKED_BOUNDARY_UNRESOLVED
 BLOCKED_UNSUPPORTED_SOURCE_LANGUAGE
 BLOCKED_UNSUPPORTED_AST
+BLOCKED_AGENT_CONTEXT_UNVERIFIED
 BLOCKED_UNSAFE_SIDE_EFFECT
 BLOCKED_RUST_BUILD_FAILED
 BLOCKED_NAPI_BUILD_FAILED
@@ -216,6 +266,7 @@ Every run should write evidence under:
   migration-plan.json
   verify.json
   benchmark.json
+  context-request.json
   report.md
 ```
 
@@ -237,13 +288,28 @@ Report must include:
 The exact command names can change, but these flows must exist:
 
 ```bash
-rustify inspect <repo>
 rustify demo
+rustify inspect <repo>
+rustify inspect <repo> --json
+rustify auto <repo> --mode conservative --json
 rustify run <repo> --target <target-id>
+rustify run <repo> --target <target-id> --json
 rustify compare <repo-a> <repo-b>
+rustify compare <repo-a> <repo-b> --json
 ```
 
 For hackathon, `rustify demo` should run one full happy path and write a proof report.
+
+`rustify auto --mode conservative --json` is the main agent-friendly path. It should do safe work automatically and block with a context request when proof is missing.
+
+Exit-code rule:
+
+```text
+0 = controlled verdict: PASS, RECOMMEND, NOT_RECOMMENDED, or BLOCKED_*
+nonzero = tool/infrastructure crash: ERROR_TOOL_FAILURE
+```
+
+Blockers are successful product outcomes for agents. They should not look like shell crashes to CAR.
 
 ## Engineering Depth Requirements
 The judges should see:

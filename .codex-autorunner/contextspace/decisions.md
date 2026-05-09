@@ -91,3 +91,19 @@ Reason:
 Consequence:
 - CAR tickets and proof history are demo assets.
 - CLI remains the main product.
+
+## 2026-05-09 - Codex-native means instructions plus verifiable protocol
+
+Decision:
+- Use official Codex project convention: `AGENTS.md`.
+- Do not use `crawl.md` as a Codex convention unless a user config explicitly registers it as a fallback filename.
+- Make Rustify agent-native through `--json` commands, stable statuses, `.rustify/runs/<run-id>/` artifacts, and `contextRequest.promptForAgent`.
+
+Reason:
+- OpenAI docs say `AGENTS.md` is durable project guidance and fallback filenames require explicit config.
+- Best Use of Codex is stronger when Codex runs a verifiable workflow instead of just generating code.
+
+Consequence:
+- `rustify auto <repo> --mode conservative --json` is the main agent path.
+- `BLOCKED_*` statuses should exit 0 because they are controlled product verdicts.
+- Agent-provided context is never trusted until Rustify verifies files, commands, oracle output, and Rust/NAPI equality.

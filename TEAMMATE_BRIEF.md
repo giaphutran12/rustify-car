@@ -25,6 +25,15 @@ find one CPU-hot JS/TS function
 - No oracle = no migration.
 - No profile proof = no migration.
 - No safe runtime context = no migration.
+- Controlled blockers are success states, not crashes.
+- Codex can help find missing context, but Rustify must verify files, commands, original JS/TS output, and Rust/NAPI equality.
+
+## Codex-Native Angle
+- Official Codex repo guidance file is `AGENTS.md`.
+- CAR source of truth is `.codex-autorunner/contextspace/spec.md`.
+- Agent-friendly path is `rustify auto <repo> --mode conservative --json`.
+- Every run writes `.rustify/runs/<run-id>/report.md` plus JSON evidence.
+- Read `CODEX_NATIVE.md` before answering judge questions about "Best Use of Codex."
 
 ## Demo Points
 1. PapaParse-style CSV fast parser: verified target, prior NAPI speedup around 3.279x.
@@ -35,6 +44,8 @@ find one CPU-hot JS/TS function
 Own proof and judge readiness:
 
 - Run the demo cold.
+- Run `rustify inspect <repo> --json` and check that output is parseable.
+- Test `BLOCKED_UNSUPPORTED_SOURCE_LANGUAGE` with a non-JS/TS sample if time.
 - Try to break unsupported cases.
 - Check proof report clarity.
 - Benchmark outputs.

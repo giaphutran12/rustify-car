@@ -12,9 +12,13 @@ Core product:
 - Rustify migrates one proven JS/TS hot-path function to Rust.
 - Product is adapter-based, but hackathon implementation supports JS/TS only.
 - Non-JS/TS repos return `BLOCKED_UNSUPPORTED_SOURCE_LANGUAGE`.
+- Codex-native means `AGENTS.md` + CAR contextspace + JSON CLI + proof artifacts, not a fake `crawl.md`.
+- Main agent command is `rustify auto <repo> --mode conservative --json`.
 - Function-level proof required.
 - JS behavior oracle required.
 - Runtime context required before auto-profile/migration.
+- Missing context should produce `contextRequest.promptForAgent`.
+- Rustify must verify any context Codex provides; unverifiable context returns `BLOCKED_AGENT_CONTEXT_UNVERIFIED`.
 - If proof fails, block honestly.
 
 Immediate priority:

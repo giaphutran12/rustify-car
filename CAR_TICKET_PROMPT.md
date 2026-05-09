@@ -15,9 +15,13 @@ Critical decisions:
 - CLI is last-hope fallback/test harness.
 - Hackathon build supports JS/TS source repos only.
 - Non-JS/TS repos must return `BLOCKED_UNSUPPORTED_SOURCE_LANGUAGE`.
+- Official Codex repo guidance file is `AGENTS.md`; do not create a fake `crawl.md` convention.
+- Read `CODEX_NATIVE.md`; implement JSON/artifact-first CLI behavior.
 - No oracle = no migration.
 - No profile/benchmark proof = no migration.
 - No safe callable boundary = no migration.
+- If context is missing, emit `contextRequest.promptForAgent`.
+- If agent-provided context cannot be verified, return `BLOCKED_AGENT_CONTEXT_UNVERIFIED`.
 - Build one proof-driven migration path first.
 - Do not build desktop/pets/slides before proof loop works.
 - This repo is `rustify-car`, built by CAR/Codex Auto Runner only.
@@ -45,6 +49,15 @@ inspect repo
 -> write proof report
 ```
 
+Required agent commands:
+
+```bash
+rustify inspect <repo> --json
+rustify auto <repo> --mode conservative --json
+rustify run <repo> --target <target-id> --json
+rustify compare <repo-a> <repo-b> --json
+```
+
 Ticket requirements:
 
 - Each ticket must have acceptance criteria.
@@ -52,6 +65,7 @@ Ticket requirements:
 - Each ticket must produce evidence: JSON artifact, report, command output, or blocker.
 - If NAPI blocks, preserve exact error and use CLI only for demo survival.
 - Use explicit statuses: `PASS`, `RECOMMEND`, `NOT_RECOMMENDED`, `BLOCKED_*`, `ERROR_TOOL_FAILURE`.
+- Treat `BLOCKED_*` as exit code 0 controlled output. Nonzero is only `ERROR_TOOL_FAILURE`.
 - Keep tickets small enough for autonomous execution.
 
 Now create tickets under `.codex-autorunner/tickets/`.

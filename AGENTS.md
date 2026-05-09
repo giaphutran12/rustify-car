@@ -14,12 +14,16 @@
 ## Product Rule
 - Rustify migrates only proven hot-path functions.
 - File-level migration is not enough.
+- Hackathon source-language scope is JS/TS only; other languages must return `BLOCKED_UNSUPPORTED_SOURCE_LANGUAGE`.
+- Codex-native instruction convention is `AGENTS.md`. Do not create `crawl.md` unless user config explicitly asks for it.
 - Required gate: profiler or benchmark proves the exact function burns CPU before migration.
 - Required gate: behavior oracle proves Rust output matches original JS/TS output.
 - Required gate: benchmark proves before/after impact or reports honest no-win.
+- Agent-provided context is untrusted until Rustify verifies files, commands, callable boundary, oracle, and output equality.
 
 ## CAR Lane Rule
 - Use `.codex-autorunner/contextspace/spec.md` as source of truth.
+- Read `CODEX_NATIVE.md` for the JSON/artifact-first command contract.
 - Tickets live in `.codex-autorunner/tickets/`.
 - Keep ticket frontmatter `done: false` until verified.
 - Run `python3 .codex-autorunner/bin/lint_tickets.py` after ticket edits.
