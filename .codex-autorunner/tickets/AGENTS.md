@@ -18,3 +18,10 @@ This folder is the authoritative ticket queue for this repo/worktree.
 
 ## Ticket flow (runner)
 - See `.codex-autorunner/TICKET_FLOW_QUICKSTART.md` for `car ticket-flow ...` commands.
+
+## Sequential execution rule
+- Execute tickets in numeric order.
+- Do not start ticket N+1 until ticket N is either verified and merged, or explicitly blocked with a controlled `BLOCKED_*` outcome.
+- Each ticket is a stage gate: create a child branch, implement the ticket, run verification, open/prepare a PR, merge to `main`, pull `main`, then continue.
+- If CAR cannot open/merge PRs itself, it must leave exact branch name, commands run, evidence files, and merge instructions.
+- Do not run these tickets in parallel.
