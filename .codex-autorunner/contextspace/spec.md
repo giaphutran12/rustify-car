@@ -228,6 +228,41 @@ If the agent gives unverifiable context, return:
 BLOCKED_AGENT_CONTEXT_UNVERIFIED
 ```
 
+## Test Provenance And Anti-Hallucination Rules
+
+Before asking an agent to fill runtime-context gaps, Rustify should snapshot the repo:
+
+```text
+git rev-parse HEAD
+git status --porcelain
+git ls-files
+hashes for source/test/fixture/snapshot files
+run start timestamp
+```
+
+Evidence classes:
+
+```text
+baseline_committed  = tracked and unchanged before agent request; strong
+baseline_dirty      = existed before run but modified/untracked; medium
+created_during_run  = agent/user created after request; weak proposed harness
+modified_during_run = changed after request; weak unless approved
+```
+
+Agent-created tests are not useless. They are weak because the agent may have invented the input/output or tested the wrong thing.
+
+Running the test is required but not enough. A passing test proves only that the test passed.
+
+For weak/proposed tests, Rustify must verify:
+
+- the test imports/calls the candidate function
+- call trace or coverage shows function A executed
+- mutation check fails the test when function A is temporarily changed to throw or return wrong output
+- expected output comes from existing committed fixture/snapshot or from running the original JS/TS function on fixed inputs
+- Rust/NAPI output equals original JS/TS output
+
+If agent created both input and expected output without provenance, use it only as a smoke harness. Return `BLOCKED_ORACLE_REQUIRED` for migration.
+
 ## Required Status Codes
 Use explicit status values in JSON artifacts and reports.
 

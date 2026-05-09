@@ -35,6 +35,13 @@ find one CPU-hot JS/TS function
 - Every run writes `.rustify/runs/<run-id>/report.md` plus JSON evidence.
 - Read `CODEX_NATIVE.md` before answering judge questions about "Best Use of Codex."
 
+## Agent-Created Tests
+- Existing committed tests/fixtures are strong evidence.
+- Agent-created tests are proposed harnesses, not trusted oracles.
+- Rustify should snapshot git state before asking the agent, then label new/modified tests as weak provenance.
+- A passing test is not enough. Rustify should prove the test calls the target function and fails when the target function is intentionally broken.
+- Expected output must come from committed fixtures/snapshots or from running the original JS/TS function. Agent-invented expected output is not an oracle.
+
 ## Demo Points
 1. PapaParse-style CSV fast parser: verified target, prior NAPI speedup around 3.279x.
 2. oh-my-openagent hashline formatter: verified target, prior NAPI speedup around 3.064x.

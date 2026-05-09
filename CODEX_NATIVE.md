@@ -101,6 +101,36 @@ Accepted only if Rustify can prove:
 
 If agent-provided context cannot be verified, return `BLOCKED_AGENT_CONTEXT_UNVERIFIED`.
 
+## Test Provenance And Hallucination Gate
+
+Agent-created tests are useful, but they are not trusted oracles by default.
+
+Rustify must record a baseline before asking Codex for context:
+
+- `git rev-parse HEAD`
+- `git status --porcelain`
+- tracked file list from `git ls-files`
+- hashes for candidate tests, fixtures, snapshots, and source files
+- run start timestamp
+
+Then classify evidence:
+
+- `baseline_committed`: tracked and unchanged before Rustify asked the agent. Strongest.
+- `baseline_dirty`: existed before the run but was already modified/untracked. Medium, requires user/agent explanation.
+- `created_during_run`: added after the context request. Weak; treat as proposed harness only.
+- `modified_during_run`: changed after the context request. Weak unless change is explicitly approved.
+
+Running a test is required, but not enough. A bad test can pass without testing the target function.
+
+For a proposed or weak test, Rustify must verify:
+
+- the test actually imports/calls the candidate function, using AST/call trace/coverage
+- the test fails if Rustify temporarily mutates function A to throw or return a wrong value
+- expected output is produced by the original JS/TS function or comes from an existing committed fixture/snapshot
+- Rust/NAPI output equals that original JS/TS output
+
+If an agent writes both the input and expected output from imagination, Rustify must not call that an oracle. It can run it as a smoke harness only and should return `BLOCKED_ORACLE_REQUIRED` for migration.
+
 ## Future, Not Today
 
 Do not build these before the CLI proof loop works:
@@ -112,4 +142,3 @@ Do not build these before the CLI proof loop works:
 - pet visualizer
 - presentation generator
 - non-JS/TS adapters
-
