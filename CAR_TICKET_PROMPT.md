@@ -5,9 +5,20 @@ Read:
 - `.codex-autorunner/contextspace/spec.md`
 - `.codex-autorunner/contextspace/active_context.md`
 - `.codex-autorunner/contextspace/decisions.md`
+- `.codex-autorunner/tickets/AGENTS.md`
 - `QA_AND_GIT_STRATEGY.md`
 
-Create a fresh ordered ticket queue for `rustify-car`.
+Execute the existing ordered ticket queue for `rustify-car`.
+
+Queue:
+
+```text
+.codex-autorunner/tickets/TICKET-001.md
+...
+.codex-autorunner/tickets/TICKET-014.md
+```
+
+Run tickets sequentially. Do not run them in parallel. Do not start ticket N+1 until ticket N is verified and merged, or explicitly blocked with a controlled `BLOCKED_*` result.
 
 Critical decisions:
 
@@ -62,7 +73,7 @@ rustify run <repo> --target <target-id> --json
 rustify compare <repo-a> <repo-b> --json
 ```
 
-Ticket requirements:
+Ticket execution requirements:
 
 - Each ticket must have acceptance criteria.
 - Each ticket must include verification commands.
@@ -82,4 +93,4 @@ Ticket requirements:
   8. opencode candidate/blocker.
   9. compare command against `rustify-codex`.
 
-Now create tickets under `.codex-autorunner/tickets/`.
+Start with `.codex-autorunner/tickets/TICKET-001.md`.

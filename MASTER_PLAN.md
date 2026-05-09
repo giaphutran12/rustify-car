@@ -12,6 +12,14 @@ Pasteable CAR prompt:
 /Users/edwardtran/car-hub/rustify-car/CAR_TICKET_PROMPT.md
 ```
 
+Sequential ticket queue:
+
+```text
+/Users/edwardtran/car-hub/rustify-car/.codex-autorunner/tickets/TICKET-001.md
+...
+/Users/edwardtran/car-hub/rustify-car/.codex-autorunner/tickets/TICKET-014.md
+```
+
 QA and PR strategy:
 
 ```text
